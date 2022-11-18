@@ -1,0 +1,27 @@
+[OPEN_PERM]             open ('r')
+[ACCESS_PERM]           fseek
+[ACCESS_PERM]           fseek
+[ACCESS_PERM]           read
+[CLOSE_NOWRITE]         close
+
+[OPEN_PERM]             open ('w')
+[MODIFY]                write('')
+[MODIFY CLOSE_WRITE]    ?, close
+
+pattern:
+    // Getting size
+    if (size from fseek)
+    {
+        [OPEN_PERM]
+        [ACCESS_PERM] * (>= 1) // One or more times
+        [CLOSE_NOWRITE]
+    }
+    else
+    {
+        // todo
+    }
+
+    // Write to file
+    [OPEN_PERM]
+    [MODIFY] * (>= 1)
+    [CLOSE_WRITE]
