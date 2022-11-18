@@ -85,7 +85,7 @@ class EasySecurity
 {
 public:
     using Patterns = std::vector<EventHistoryPattern>;
-    EasySecurity(Patterns patterns);
+    EasySecurity(Patterns patterns, bool enable_stop_detected_process = false);
 
     void Step(pid_t pid, int event_fd, FanotifyEvent fan_event);
 
@@ -100,6 +100,8 @@ private:
 
     ProcessesMap m_proc_map;
     Patterns m_patterns;
+
+    bool m_stop_detected_process;
 };
 
 template <typename EventHistoryIter, typename EventHistoryPatternIter>

@@ -1,8 +1,10 @@
 #include "easy_security.hpp"
 
 #include <sys/fanotify.h>
+#include <sys/types.h>
 #include <fcntl.h>
 #include <limits.h>
+#include <signal.h>
 
 namespace es
 {
@@ -62,6 +64,7 @@ auto EventHistory::cend() const noexcept
     return m_events.rend();
 }
 
+// todo: add proc processor
 static std::string GetFileName(int fd)
 {
     char path[PATH_MAX];
@@ -69,7 +72,7 @@ static std::string GetFileName(int fd)
 
     int nbytes = readlink(path, path, sizeof(path));
     if (nbytes <= 0)
-        return {};
+        return {"invalid readlink"};
 
     path[nbytes] = '\0';
 
@@ -85,12 +88,12 @@ static std::string GetProcComm(int fd)
     if (proc_fd < 0)
     {
         perror("open");
-        return {"inv 0"};
+        return {"invalid open comm"};
     }
     
     int nbytes = read(proc_fd, path, sizeof(path));
     if (nbytes <= 0)
-        return {"inv 1"};
+        return {"invalid read comm"};
 
     path[nbytes - 1] = '\0';
 
@@ -99,8 +102,9 @@ static std::string GetProcComm(int fd)
     return path;
 }
 
-EasySecurity::EasySecurity(Patterns patterns)
+EasySecurity::EasySecurity(Patterns patterns, bool enable_stop_detected_process)
     : m_patterns(std::move(patterns))
+    , m_stop_detected_process(enable_stop_detected_process)
 {}
 
 void EasySecurity::Step(pid_t pid, int event_fd, FanotifyEvent fan_event)
@@ -118,6 +122,14 @@ void EasySecurity::Step(pid_t pid, int event_fd, FanotifyEvent fan_event)
                "    pid: %d" 
                "    comm: %s\n"
                "    file: %s\n", pid, comm.c_str(), file_name.c_str());
+
+        if (m_stop_detected_process)
+        {
+            if (kill(pid, SIGSTOP) < 0)
+                perror("Action: Failed to send stop signal");
+            else
+                printf("Action: stoped\n");
+        }
     }
 }
 

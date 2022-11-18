@@ -43,8 +43,9 @@ int main()
     //                          mask, AT_FDCWD, ".log"));
 
     // Just now exist only one pattern
-    es::EasySecurity detector({encryptor_patterns::encrypt_file_use_fseek()});
-    
+    const bool enable_stop_detected_process = true;
+    es::EasySecurity detector({encryptor_patterns::encrypt_file_use_fseek()}, enable_stop_detected_process);
+
     printf("Start scanning\n");
 
     int invalid_version_counter = 0;
