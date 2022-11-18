@@ -35,7 +35,7 @@ int main()
     // CHECK_NNEG(fanotify_mark(scan_fd, FAN_MARK_ADD | FAN_MARK_IGNORED_MASK | FAN_MARK_IGNORED_SURV_MODIFY,
     //                          mask, AT_FDCWD, ".log"));
 
-    es::EasySecurity detector({encryptor_patterns::enc_pattern()});
+    es::EasySecurity detector({encryptor_patterns::encrypt_file_use_fseek()});
 
     printf("Start scanning\n");
     struct fanotify_event_metadata md = {};

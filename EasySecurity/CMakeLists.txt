@@ -17,7 +17,7 @@ add_subdirectory(boost/static_assert)
 add_subdirectory(boost/throw_exception)
 add_subdirectory(boost/type_traits)
 
-file (GLOB ${PROJECT_NAME}_SOURCES main.cpp easy_security.cpp print_lib.cpp patterns.cpp)
+file (GLOB ${PROJECT_NAME}_SOURCES src/*.cpp)
 
 add_executable(${PROJECT_NAME} ${${PROJECT_NAME}_SOURCES})
 target_link_libraries(${PROJECT_NAME} boost_circular_buffer)

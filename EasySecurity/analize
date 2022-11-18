@@ -8,7 +8,7 @@
 [MODIFY]                write('')
 [MODIFY CLOSE_WRITE]    ?, close
 
-pattern:
+pattern of encrypting:
     // Getting size
     if (size from fseek)
     {
@@ -18,7 +18,7 @@ pattern:
     }
     else
     {
-        // todo
+        // todo: get statistic from stat
     }
 
     // Write to file

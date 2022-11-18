@@ -1,3 +1,6 @@
+
+#if 0
+
 #include <fcntl.h>
 #include <sys/fanotify.h>
 #include <cstdio>
@@ -151,3 +154,4 @@ int main ()
 
     close(scan_fd);
 }
+#endif

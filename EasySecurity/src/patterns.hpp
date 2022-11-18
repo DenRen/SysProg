@@ -5,6 +5,6 @@
 namespace encryptor_patterns
 {
 
-es::EventHistoryPattern enc_pattern();
+es::EventHistoryPattern encrypt_file_use_fseek();
 
 }
