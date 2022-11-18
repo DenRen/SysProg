@@ -41,14 +41,20 @@ public:
             MORE_EQUAL
         };
 
+        constexpr EventScheme(Event event, uint32_t number, Repeats repeats = Repeats::EQUAL) noexcept
+            : m_event{event}
+            , m_number{number}
+            , m_repeats{repeats}
+        {}
+
         Event m_event;
         uint32_t m_number;
         Repeats m_repeats;
     };
 
-    template <EventScheme... EventSchemes>
-    EventHistoryPattern()
-        : m_pattern{EventSchemes...}
+    template <typename... EventSchemes>
+    EventHistoryPattern(EventSchemes&&... eventSchemes)
+        : m_pattern{std::forward<EventSchemes>(eventSchemes)...}
     {}
 
     auto cbegin() const noexcept;
@@ -61,9 +67,9 @@ private:
 class EventHistory
 {
 public:
-    EventHistory(std::size_t size);
+    explicit EventHistory(std::size_t size = 1024);
     void AddEvent(Event event);
-    
+
     auto cbegin() const noexcept;
     auto cend() const noexcept;
 
@@ -78,7 +84,14 @@ bool FindPattern(EventHistoryIter event_begin, EventHistoryIter event_end,
 class EasySecurity
 {
 public:
-    void AddEvent(pid_t pid, FanotifyEvent event);
+    using Patterns = std::vector<EventHistoryPattern>;
+    EasySecurity(Patterns patterns);
+
+    void Step(pid_t pid, int event_fd, FanotifyEvent fan_event);
+
+private:
+    void AddFanotifyEvent(FanotifyEvent fan_event, EventHistory& event_history);
+    bool CheckEventHistoryOnPatterns(const EventHistory& event_history);
 
 private:
     using FileName = std::string;
@@ -86,6 +99,54 @@ private:
     using ProcessesMap = std::map<pid_t, FilesHistory>;
 
     ProcessesMap m_proc_map;
+    Patterns m_patterns;
 };
+
+template <typename EventHistoryIter, typename EventHistoryPatternIter>
+bool FindPattern(EventHistoryIter event_begin, EventHistoryIter event_end,
+                 EventHistoryPatternIter pattern_begin, EventHistoryPatternIter pattern_end)
+{
+    using Event = es::Event;
+    using Repeats = es::EventHistoryPattern::EventScheme::Repeats;
+    using EventScheme = es::EventHistoryPattern::EventScheme;
+
+    auto it_event = event_begin;
+    for (auto it_patt = pattern_begin; it_patt != pattern_end; ++it_patt)
+    {
+        if (it_event == event_end)
+            return false;
+
+        switch (it_patt->m_repeats)
+        {
+        case Repeats::EQUAL:
+            for (uint32_t ctr = 0; ctr < it_patt->m_number && it_event != event_end; ++ctr, ++it_event)
+                if (*it_event != it_patt->m_event)
+                    return false;
+            break;
+        case Repeats::MORE:
+            for (uint32_t ctr = 0; ctr < (it_patt->m_number + 1) && it_event != event_end; ++ctr, ++it_event)
+                if (*it_event != it_patt->m_event)
+                    return false;
+
+            while(it_event != event_end && *it_event == it_patt->m_event)
+                ++it_event;
+
+            break;
+        case Repeats::MORE_EQUAL:
+            for (uint32_t ctr = 0; ctr < it_patt->m_number && it_event != event_end; ++ctr, ++it_event)
+                if (*it_event != it_patt->m_event)
+                    return false;
+
+            while(it_event != event_end && *it_event == it_patt->m_event)
+                ++it_event;
+
+            break;
+        default:
+            throw std::runtime_error("incorrect repeats");
+        }
+    }
+
+    return true;
+}
 
 } // namespace es
