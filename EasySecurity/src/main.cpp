@@ -31,33 +31,74 @@ int main()
                           | FAN_OPEN_PERM
                           | FAN_ACCESS_PERM
                           ;
-    CHECK_NNEG(fanotify_mark(scan_fd, FAN_MARK_ADD | FAN_MARK_MOUNT, mask, AT_FDCWD, "/"));
+    if (int res = fanotify_mark(scan_fd, FAN_MARK_ADD | FAN_MARK_MOUNT, mask, AT_FDCWD, "/"); res < 0)
+    {
+        close(scan_fd);
+        PRINT_ERR(fanotify_mark(scan_fd, FAN_MARK_ADD | FAN_MARK_MOUNT, mask, AT_FDCWD, "/"));
+        return -errno;
+    }
+
+    // TODO: add .log file
     // CHECK_NNEG(fanotify_mark(scan_fd, FAN_MARK_ADD | FAN_MARK_IGNORED_MASK | FAN_MARK_IGNORED_SURV_MODIFY,
     //                          mask, AT_FDCWD, ".log"));
 
+    // Just now exist only one pattern
     es::EasySecurity detector({encryptor_patterns::encrypt_file_use_fseek()});
-
+    
     printf("Start scanning\n");
-    struct fanotify_event_metadata md = {};
-    while(read(scan_fd, &md, sizeof(md)) != EOF)
+
+    int invalid_version_counter = 0;
+    const int invalid_version_counter_max = 10;
+
+    int queue_overflow_counter = 0;
+    const int queue_overflow_counter_max = 10;
+
+    fanotify_event_metadata md_buf[4096 / sizeof(fanotify_event_metadata)] = {};
+    while(true)
     {
-        if (md.vers != FANOTIFY_METADATA_VERSION)
+        int md_buf_len = read(scan_fd, md_buf, sizeof(md_buf));
+        if (md_buf_len < 0 || md_buf_len == EOF)
         {
-            fprintf(stderr, "invalid version\n");
-            continue;
+            PRINT_ERR(read);
+            return -errno;
         }
 
-        detector.Step(md.pid, md.fd, md.mask);
-
-        if (IsPermEvent(md.mask))
+        for (fanotify_event_metadata* md = md_buf;
+             FAN_EVENT_OK(md, md_buf_len);
+             md = FAN_EVENT_NEXT(md, md_buf_len))
         {
-            struct fanotify_response resp = {
-                .fd = md.fd,
-                .response = FAN_ALLOW
-            };
-            CHECK_TRUE(write(scan_fd, &resp, sizeof(resp)) == sizeof(resp));
+            if (md->vers != FANOTIFY_METADATA_VERSION)
+            {
+                if (++invalid_version_counter == invalid_version_counter_max)
+                    return -1;
+
+                fprintf(stderr, "Invalid version!\n");
+                continue;
+            }
+
+            if (md->fd == FAN_NOFD)
+            {
+                if (++queue_overflow_counter == queue_overflow_counter_max)
+                    return -1;
+
+                fprintf(stderr, "Queue overflowed!\n");
+                continue;
+            }
+
+            if (md->fd < 0)
+                continue;
+
+            detector.Step(md->pid, md->fd, md->mask);
+            if (IsPermEvent(md->mask))
+            {
+                struct fanotify_response resp = {
+                    .fd = md->fd,
+                    .response = FAN_ALLOW
+                };
+                CHECK_TRUE(write(scan_fd, &resp, sizeof(resp)) == sizeof(resp));
+            }
+            close(md->fd);
         }
-        close(md.fd);
     }
 
     printf("finished\n");
