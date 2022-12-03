@@ -1,4 +1,5 @@
 #include "easy_security.hpp"
+#include "proc_processor.hpp"
 
 #include <sys/fanotify.h>
 #include <sys/types.h>
@@ -64,44 +65,6 @@ auto EventHistory::cend() const noexcept
     return m_events.rend();
 }
 
-// todo: add proc processor
-static std::string GetFileName(int fd)
-{
-    char path[PATH_MAX];
-    snprintf(path, sizeof(path), "/proc/self/fd/%d", fd);
-
-    int nbytes = readlink(path, path, sizeof(path));
-    if (nbytes <= 0)
-        return {"invalid readlink"};
-
-    path[nbytes] = '\0';
-
-    return path;
-}
-
-static std::string GetProcComm(int fd)
-{
-    char path[PATH_MAX];
-    snprintf(path, sizeof(path), "/proc/%d/comm", fd);
-
-    int proc_fd = open(path, O_RDONLY);
-    if (proc_fd < 0)
-    {
-        perror("open");
-        return {"invalid open comm"};
-    }
-    
-    int nbytes = read(proc_fd, path, sizeof(path));
-    if (nbytes <= 0)
-        return {"invalid read comm"};
-
-    path[nbytes - 1] = '\0';
-
-    close(proc_fd);
-
-    return path;
-}
-
 EasySecurity::EasySecurity(Patterns patterns, bool enable_stop_detected_process)
     : m_patterns(std::move(patterns))
     , m_stop_detected_process(enable_stop_detected_process)
@@ -109,19 +72,20 @@ EasySecurity::EasySecurity(Patterns patterns, bool enable_stop_detected_process)
 
 void EasySecurity::Step(pid_t pid, int event_fd, FanotifyEvent fan_event)
 {
-    FileName file_name = GetFileName(event_fd);
+    FileName file_name = proc::GetFileName(event_fd);
 
     FilesHistory& file_history = m_proc_map[pid];
-    EventHistory& event_history = file_history[file_name];
+    auto[event_history_it, eh_emplaced] = file_history.try_emplace(std::move(file_name));
+    EventHistory& event_history = event_history_it->second;
 
     AddFanotifyEvent(fan_event, event_history);
     if (CheckEventHistoryOnPatterns(event_history))
     {
-        auto comm = GetProcComm(event_fd);
+        auto comm = proc::GetProcComm(pid);
         printf("Find encrypt pattern!\n"
                "    pid: %d" 
                "    comm: %s\n"
-               "    file: %s\n", pid, comm.c_str(), file_name.c_str());
+               "    file: %s\n", pid, comm.c_str(), event_history_it->first.c_str());
 
         if (m_stop_detected_process)
         {

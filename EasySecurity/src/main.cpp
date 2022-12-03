@@ -44,7 +44,7 @@ int main()
 
     // Just now exist only one pattern
     const bool enable_stop_detected_process = true;
-    es::EasySecurity detector({encryptor_patterns::encrypt_file_use_fseek()}, enable_stop_detected_process);
+    es::EasySecurity detector{ { encryptor_patterns::encrypt_file_use_fseek() }, enable_stop_detected_process};
 
     printf("Start scanning\n");
 
