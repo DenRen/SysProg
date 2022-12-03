@@ -1,0 +1,11 @@
+# Add boost directories
+add_subdirectory(assert)
+add_subdirectory(circular_buffer)
+add_subdirectory(concept_check)
+add_subdirectory(config)
+add_subdirectory(core)
+add_subdirectory(move)
+add_subdirectory(preprocessor)
+add_subdirectory(static_assert)
+add_subdirectory(throw_exception)
+add_subdirectory(type_traits)
