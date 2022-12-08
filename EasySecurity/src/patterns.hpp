@@ -2,9 +2,10 @@
 
 #include "easy_security.hpp"
 
-namespace encryptor_patterns
+namespace patterns
 {
 
 es::EventHistoryPattern encrypt_file_use_fseek();
+es::EventHistoryPattern open_on_write();
 
 }

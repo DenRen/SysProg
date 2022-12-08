@@ -1,6 +1,6 @@
 #include "patterns.hpp"
 
-namespace encryptor_patterns
+namespace patterns
 {
 
 using Event = es::Event;
@@ -17,6 +17,14 @@ es::EventHistoryPattern encrypt_file_use_fseek()
         EventScheme{Event::OPEN, 1},
         EventScheme{Event::MODIFY, 1, Repeats::MORE_EQUAL}, // write x1, x2, x3, ...
         EventScheme{Event::CLOSE_WRITE, 1},
+    };
+}
+
+es::EventHistoryPattern open_on_write()
+{
+    return {
+        EventScheme{Event::OPEN, 1},
+        // EventScheme{Event::MODIFY, 1}    // TODO: Understand why FAN_CLASS_PRE_CONTENT not work
     };
 }
 

@@ -31,3 +31,36 @@
 [submodule "EasySecurity/3rdparty/fmt"]
 	path = EasySecurity/3rdparty/fmt
 	url = https://github.com/fmtlib/fmt
+[submodule "EasySecurity/3rdparty/boost/interprocess"]
+	path = EasySecurity/3rdparty/boost/interprocess
+	url = https://github.com/boostorg/interprocess
+[submodule "EasySecurity/3rdparty/boost/winapi"]
+	path = EasySecurity/3rdparty/boost/winapi
+	url = https://github.com/boostorg/winapi
+[submodule "EasySecurity/3rdparty/boost/intrusive"]
+	path = EasySecurity/3rdparty/boost/intrusive
+	url = https://github.com/boostorg/intrusive
+[submodule "EasySecurity/3rdparty/boost/unordered"]
+	path = EasySecurity/3rdparty/boost/unordered
+	url = https://github.com/boostorg/unordered
+[submodule "EasySecurity/3rdparty/boost/integer"]
+	path = EasySecurity/3rdparty/boost/integer
+	url = https://github.com/boostorg/integer
+[submodule "EasySecurity/3rdparty/boost/container"]
+	path = EasySecurity/3rdparty/boost/container
+	url = https://github.com/boostorg/container
+[submodule "EasySecurity/3rdparty/boost/container_hash"]
+	path = EasySecurity/3rdparty/boost/container_hash
+	url = https://github.com/boostorg/container_hash
+[submodule "EasySecurity/3rdparty/boost/predef"]
+	path = EasySecurity/3rdparty/boost/predef
+	url = https://github.com/boostorg/predef
+[submodule "EasySecurity/3rdparty/boost/describe"]
+	path = EasySecurity/3rdparty/boost/describe
+	url = https://github.com/boostorg/describe
+[submodule "EasySecurity/3rdparty/boost/mp11"]
+	path = EasySecurity/3rdparty/boost/mp11
+	url = https://github.com/boostorg/mp11
+[submodule "EasySecurity/3rdparty/boost/tuple"]
+	path = EasySecurity/3rdparty/boost/tuple
+	url = https://github.com/boostorg/tuple
