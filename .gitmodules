@@ -1,30 +1,66 @@
 [submodule "EasySecurity/boost/circular_buffer"]
-	path = EasySecurity/boost/circular_buffer
+	path = EasySecurity/3rdparty/boost/circular_buffer
 	url = https://github.com/boostorg/circular_buffer
 [submodule "EasySecurity/boost/type_traits"]
-	path = EasySecurity/boost/type_traits
+	path = EasySecurity/3rdparty/boost/type_traits
 	url = https://github.com/boostorg/type_traits
 [submodule "EasySecurity/boost/throw_exception"]
-	path = EasySecurity/boost/throw_exception
+	path = EasySecurity/3rdparty/boost/throw_exception
 	url = https://github.com/boostorg/throw_exception
 [submodule "EasySecurity/boost/static_assert"]
-	path = EasySecurity/boost/static_assert
+	path = EasySecurity/3rdparty/boost/static_assert
 	url = https://github.com/boostorg/static_assert
 [submodule "EasySecurity/boost/move"]
-	path = EasySecurity/boost/move
+	path = EasySecurity/3rdparty/boost/move
 	url = https://github.com/boostorg/move
 [submodule "EasySecurity/boost/core"]
-	path = EasySecurity/boost/core
+	path = EasySecurity/3rdparty/boost/core
 	url = https://github.com/boostorg/core
 [submodule "EasySecurity/boost/config"]
-	path = EasySecurity/boost/config
+	path = EasySecurity/3rdparty/boost/config
 	url = https://github.com/boostorg/config
 [submodule "EasySecurity/boost/concept_check"]
-	path = EasySecurity/boost/concept_check
+	path = EasySecurity/3rdparty/boost/concept_check
 	url = https://github.com/boostorg/concept_check
 [submodule "EasySecurity/boost/assert"]
-	path = EasySecurity/boost/assert
+	path = EasySecurity/3rdparty/boost/assert
 	url = https://github.com/boostorg/assert
 [submodule "EasySecurity/boost/preprocessor"]
-	path = EasySecurity/boost/preprocessor
+	path = EasySecurity/3rdparty/boost/preprocessor
 	url = https://github.com/boostorg/preprocessor
+[submodule "EasySecurity/3rdparty/fmt"]
+	path = EasySecurity/3rdparty/fmt
+	url = https://github.com/fmtlib/fmt
+[submodule "EasySecurity/3rdparty/boost/interprocess"]
+	path = EasySecurity/3rdparty/boost/interprocess
+	url = https://github.com/boostorg/interprocess
+[submodule "EasySecurity/3rdparty/boost/winapi"]
+	path = EasySecurity/3rdparty/boost/winapi
+	url = https://github.com/boostorg/winapi
+[submodule "EasySecurity/3rdparty/boost/intrusive"]
+	path = EasySecurity/3rdparty/boost/intrusive
+	url = https://github.com/boostorg/intrusive
+[submodule "EasySecurity/3rdparty/boost/unordered"]
+	path = EasySecurity/3rdparty/boost/unordered
+	url = https://github.com/boostorg/unordered
+[submodule "EasySecurity/3rdparty/boost/integer"]
+	path = EasySecurity/3rdparty/boost/integer
+	url = https://github.com/boostorg/integer
+[submodule "EasySecurity/3rdparty/boost/container"]
+	path = EasySecurity/3rdparty/boost/container
+	url = https://github.com/boostorg/container
+[submodule "EasySecurity/3rdparty/boost/container_hash"]
+	path = EasySecurity/3rdparty/boost/container_hash
+	url = https://github.com/boostorg/container_hash
+[submodule "EasySecurity/3rdparty/boost/predef"]
+	path = EasySecurity/3rdparty/boost/predef
+	url = https://github.com/boostorg/predef
+[submodule "EasySecurity/3rdparty/boost/describe"]
+	path = EasySecurity/3rdparty/boost/describe
+	url = https://github.com/boostorg/describe
+[submodule "EasySecurity/3rdparty/boost/mp11"]
+	path = EasySecurity/3rdparty/boost/mp11
+	url = https://github.com/boostorg/mp11
+[submodule "EasySecurity/3rdparty/boost/tuple"]
+	path = EasySecurity/3rdparty/boost/tuple
+	url = https://github.com/boostorg/tuple

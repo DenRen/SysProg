@@ -82,6 +82,9 @@
         "cinttypes": "cpp",
         "typeindex": "cpp",
         "variant": "cpp",
-        "print_lib.h": "c"
+        "print_lib.h": "c",
+        "filesystem": "cpp",
+        "strstream": "cpp",
+        "scoped_allocator": "cpp"
     }
 }
